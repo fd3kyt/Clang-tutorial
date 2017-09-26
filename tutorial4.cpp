@@ -105,10 +105,13 @@ int main()
         compInst);
     preprocessor.Initialize(*pTargetInfo);
 
+    clang::RawPCHContainerReader container_reader;
+
     clang::FrontendOptions frontendOptions;
     clang::InitializePreprocessor(
         preprocessor,
         *pOpts,
+        container_reader,
         frontendOptions);
         
     const clang::FileEntry *pFile = fileManager.getFile(
@@ -121,7 +124,7 @@ int main()
     clang::SelectorTable selectorTable;
 
     clang::Builtin::Context builtinContext;
-    builtinContext.InitializeTarget(targetInfo);
+    builtinContext.InitializeTarget(targetInfo, nullptr);
     clang::ASTContext astContext(
         languageOptions,
         sourceManager,

@@ -366,9 +366,12 @@ int main(int argc, char **argv)
   langOpts.CXXExceptions = 1; 
   langOpts.RTTI = 1; 
   langOpts.Bool = 1; 
-  langOpts.CPlusPlus = 1; 
+  langOpts.CPlusPlus = 1;
+  llvm::Triple t;
+  PreprocessorOptions ppopts;
   Invocation->setLangDefaults(langOpts,
                               clang::IK_CXX,
+                              t, ppopts,
                               clang::LangStandard::lang_cxx0x);
 
   compiler.createPreprocessor(clang::TU_Complete);

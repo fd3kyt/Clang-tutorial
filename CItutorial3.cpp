@@ -78,8 +78,10 @@ int main()
                                 false);
     // </Warning!!> -- End of Platform Specific Code
 
+    clang::RawPCHContainerReader container_reader;
     clang::InitializePreprocessor(ci.getPreprocessor(), 
                                   ci.getPreprocessorOpts(),
+                                  container_reader,
                                   ci.getFrontendOpts());
 
     const FileEntry *pFile = ci.getFileManager().getFile("testInclude.c");

@@ -78,10 +78,13 @@ int main()
     // your archictecture and things like that.
     //preprocessorOptions.UsePredefines = false;
 
+    clang::RawPCHContainerReader container_reader;
+
     clang::FrontendOptions frontendOptions;
     clang::InitializePreprocessor(
         preprocessor,
         *pOpts,
+        container_reader,
         frontendOptions);
     clang::ApplyHeaderSearchOptions( preprocessor.getHeaderSearchInfo(),
 	compInst.getHeaderSearchOpts(),
