@@ -1,9 +1,9 @@
-CXX := clang++
+CXX := /usr/local/bin/clang++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := -fno-rtti
-LLVMCONFIG := /Users/lawrenceolson/Code/build_llvm/Debug+Asserts/bin/llvm-config
+LLVMCONFIG := /usr/local/bin/llvm-config
 
-CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG)
+CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG) -I /usr/local/include/llvm/ --std=c++11
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 SOURCES = tutorial1.cpp \
