@@ -1,5 +1,5 @@
 CXX := /usr/local/bin/clang++
-LLVMCOMPONENTS := cppbackend
+# LLVMCOMPONENTS := cppbackend
 RTTIFLAG := -fno-rtti
 LLVMCONFIG := /usr/local/bin/llvm-config
 
