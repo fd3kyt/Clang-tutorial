@@ -77,6 +77,9 @@
 #include "clang/Rewrite/Frontend/Rewriters.h"
 #include "clang/Rewrite/Core/Rewriter.h"
 
+#include "clang/Lex/PreprocessorOptions.h"
+
+
 using namespace clang;
 
 // RecursiveASTVisitor is is the big-kahuna visitor that traverses
@@ -300,7 +303,7 @@ int main(int argc, char **argv)
   //compiler.createDiagnostics(argc, argv);
 
   // Create an invocation that passes any flags to preprocessor
-  CompilerInvocation *Invocation = new CompilerInvocation;
+  std::shared_ptr<CompilerInvocation> Invocation;
   CompilerInvocation::CreateFromArgs(*Invocation, argv + 1, argv + argc,
                                      compiler.getDiagnostics());
   compiler.setInvocation(Invocation);
@@ -370,9 +373,12 @@ int main(int argc, char **argv)
   llvm::Triple t;
   PreprocessorOptions ppopts;
   Invocation->setLangDefaults(langOpts,
-                              clang::IK_CXX,
+                              clang::InputKind::CXX,  // enum clang::InputKind
                               t, ppopts,
-                              clang::LangStandard::lang_cxx0x);
+                              // clang::LangStandard::Kind
+                              // ./include/clang/Frontend/LangStandards.def
+                              // rtags auto complete
+                              clang::LangStandard::lang_cxx11);
 
   compiler.createPreprocessor(clang::TU_Complete);
   compiler.getPreprocessorOpts().UsePredefines = false;

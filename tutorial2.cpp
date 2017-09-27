@@ -22,6 +22,8 @@
 #include "clang/Lex/Preprocessor.h"
 #include "clang/Frontend/CompilerInstance.h"
 
+#include "clang/Basic/MemoryBufferCache.h"
+
 
 int main()
 {
@@ -63,12 +65,14 @@ int main()
   clang::CompilerInstance compInst;
 
   std::shared_ptr<clang::PreprocessorOptions> pOpts;
+  clang::MemoryBufferCache memory_buffer_cache;
 
   clang::Preprocessor preprocessor(
       pOpts,
       *pDiagnosticsEngine,
       languageOptions,
       sourceManager,
+      memory_buffer_cache,
       headerSearch,
       compInst
                                    );

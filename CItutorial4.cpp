@@ -26,6 +26,8 @@
 #include "clang/Parse/Parser.h"
 #include "clang/Parse/ParseAST.h"
 
+#include "clang/Lex/PreprocessorOptions.h"
+
 /******************************************************************************
  *
  *****************************************************************************/

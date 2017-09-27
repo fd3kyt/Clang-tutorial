@@ -25,6 +25,8 @@
 #include "clang/AST/ASTConsumer.h"
 #include "clang/Parse/ParseAST.h"
 
+#include "clang/Lex/PreprocessorOptions.h"
+
 
 // RecursiveASTVisitor is is the big-kahuna visitor that traverses
 // everything in the AST.

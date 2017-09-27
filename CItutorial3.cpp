@@ -22,6 +22,9 @@
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Lex/HeaderSearch.h"
 #include "clang/Frontend/Utils.h"
+
+#include "clang/Lex/PreprocessorOptions.h"
+
 /******************************************************************************
  *
  *****************************************************************************/
