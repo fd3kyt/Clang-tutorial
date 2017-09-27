@@ -23,6 +23,7 @@
 #include "clang/Lex/Preprocessor.h"
 #include "clang/Frontend/CompilerInstance.h"
 
+#include "clang/Basic/MemoryBufferCache.h"
 
 int main()
 {
@@ -52,30 +53,32 @@ int main()
   //    clang::TargetOptions targetOptions;
   targetOptions->Triple = llvm::sys::getDefaultTargetTriple();
 
-  clang::TargetInfo *pTargetInfo = 
+  clang::TargetInfo *pTargetInfo =
       clang::TargetInfo::CreateTargetInfo(
           *pDiagnosticsEngine,
           targetOptions);
 
-  llvm::IntrusiveRefCntPtr<clang::HeaderSearchOptions> hso;
+  std::shared_ptr<clang::HeaderSearchOptions> hso;
 
   clang::HeaderSearch headerSearch(hso,
-                                   sourceManager, 
+                                   sourceManager,
                                    *pDiagnosticsEngine,
                                    languageOptions,
                                    pTargetInfo);
-  clang::CompilerInstance compInst;
 
-  llvm::IntrusiveRefCntPtr<clang::PreprocessorOptions> pOpts;
+  clang::MemoryBufferCache memory_buffer_cache;
+
+  std::shared_ptr<clang::PreprocessorOptions> pOpts;
+  clang::CompilerInstance compInst;
 
   clang::Preprocessor preprocessor(
       pOpts,
       *pDiagnosticsEngine,
       languageOptions,
       sourceManager,
+      memory_buffer_cache,
       headerSearch,
-      compInst
-                                   );
+      compInst);
 
   return 0;
 }

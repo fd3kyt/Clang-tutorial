@@ -19,7 +19,7 @@ SOURCES = tutorial1.cpp \
     CIBasicRecursiveASTVisitor.cpp \
     CIrewriter.cpp \
     ToolingTutorial.cpp \
-    CommentHandling.cpp 
+    CommentHandling.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 EXES = $(OBJECTS:.o=)
