@@ -21,22 +21,22 @@
  *****************************************************************************/
 int main()
 {
-    using clang::CompilerInstance;
-    using clang::TargetOptions;
-    using clang::TargetInfo;
-    using clang::DiagnosticOptions;
-    using clang::TextDiagnosticPrinter;
+  using clang::CompilerInstance;
+  using clang::TargetOptions;
+  using clang::TargetInfo;
+  using clang::DiagnosticOptions;
+  using clang::TextDiagnosticPrinter;
 
-    CompilerInstance ci;
-    ci.createDiagnostics();
+  CompilerInstance ci;
+  ci.createDiagnostics();
 
- 	std::shared_ptr<TargetOptions>	pto	=	std::make_shared<TargetOptions>();
-	pto->Triple = llvm::sys::getDefaultTargetTriple();
-	TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
-	ci.setTarget(pti);
+  std::shared_ptr<TargetOptions>	pto	=	std::make_shared<TargetOptions>();
+  pto->Triple = llvm::sys::getDefaultTargetTriple();
+  TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
+  ci.setTarget(pti);
 
-    ci.createFileManager();
-    ci.createSourceManager(ci.getFileManager());
-    ci.createPreprocessor(clang::TU_Complete);
-    return 0;
+  ci.createFileManager();
+  ci.createSourceManager(ci.getFileManager());
+  ci.createPreprocessor(clang::TU_Complete);
+  return 0;
 }

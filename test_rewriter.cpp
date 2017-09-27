@@ -1,7 +1,7 @@
 int main() {
-	bool a = true;
-	bool b = false;
+  bool a = true;
+  bool b = false;
 
-	if( (a && b) || ( b && a)) {
-	}
+  if( (a && b) || ( b && a)) {
+  }
 }

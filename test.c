@@ -8,7 +8,7 @@ typedef int footype;
 
 int main()
 {
-	typedef unsigned long bartype;
-	printf("Hello World\n");
-	return 0;
+  typedef unsigned long bartype;
+  printf("Hello World\n");
+  return 0;
 }

@@ -26,41 +26,41 @@
  *****************************************************************************/
 int main()
 {
-    using clang::CompilerInstance;
-    using clang::TargetOptions;
-    using clang::TargetInfo;
-    using clang::FileEntry;
-    using clang::Token;
-    using clang::DiagnosticOptions;
-    using clang::TextDiagnosticPrinter;
+  using clang::CompilerInstance;
+  using clang::TargetOptions;
+  using clang::TargetInfo;
+  using clang::FileEntry;
+  using clang::Token;
+  using clang::DiagnosticOptions;
+  using clang::TextDiagnosticPrinter;
 
-    CompilerInstance ci;
-    DiagnosticOptions diagnosticOptions;
-    ci.createDiagnostics();
+  CompilerInstance ci;
+  DiagnosticOptions diagnosticOptions;
+  ci.createDiagnostics();
 
-    std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
-    pto->Triple = llvm::sys::getDefaultTargetTriple();
-    TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
-    ci.setTarget(pti);
+  std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
+  pto->Triple = llvm::sys::getDefaultTargetTriple();
+  TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
+  ci.setTarget(pti);
 
-    ci.createFileManager();
-    ci.createSourceManager(ci.getFileManager());
-    ci.createPreprocessor(clang::TU_Complete);
+  ci.createFileManager();
+  ci.createSourceManager(ci.getFileManager());
+  ci.createPreprocessor(clang::TU_Complete);
 
-    const FileEntry *pFile = ci.getFileManager().getFile("test.c");
-    ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
-    ci.getPreprocessor().EnterMainSourceFile();
-    ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
-                                             &ci.getPreprocessor());
-    Token tok;
-    do {
-        ci.getPreprocessor().Lex(tok);
-        if( ci.getDiagnostics().hasErrorOccurred())
-            break;
-        ci.getPreprocessor().DumpToken(tok);
-        std::cerr << std::endl;
-    } while ( tok.isNot(clang::tok::eof));
-    ci.getDiagnosticClient().EndSourceFile();
+  const FileEntry *pFile = ci.getFileManager().getFile("test.c");
+  ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
+  ci.getPreprocessor().EnterMainSourceFile();
+  ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
+                                           &ci.getPreprocessor());
+  Token tok;
+  do {
+    ci.getPreprocessor().Lex(tok);
+    if( ci.getDiagnostics().hasErrorOccurred())
+      break;
+    ci.getPreprocessor().DumpToken(tok);
+    std::cerr << std::endl;
+  } while ( tok.isNot(clang::tok::eof));
+  ci.getDiagnosticClient().EndSourceFile();
 
-    return 0;
+  return 0;
 }

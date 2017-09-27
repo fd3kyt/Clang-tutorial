@@ -46,7 +46,7 @@ bool MyRecursiveASTVisitor::VisitTypedefDecl(clang::TypedefDecl *d) {
 
 class MyASTConsumer : public clang::ASTConsumer {
  public:
-    virtual bool HandleTopLevelDecl(clang::DeclGroupRef d);
+  virtual bool HandleTopLevelDecl(clang::DeclGroupRef d);
 };
 
 
@@ -73,10 +73,10 @@ int main()
   DiagnosticOptions diagnosticOptions;
   ci.createDiagnostics();
 
-    std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
+  std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
   pto->Triple = llvm::sys::getDefaultTargetTriple();
-    TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
-    ci.setTarget(pti);
+  TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
+  ci.setTarget(pti);
 
   ci.createFileManager();
   ci.createSourceManager(ci.getFileManager());
@@ -87,7 +87,7 @@ int main()
   ci.createASTContext();
 
   const FileEntry *pFile = ci.getFileManager().getFile("test.c");
-    ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
+  ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
   ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
                                            &ci.getPreprocessor());
   clang::ParseAST(ci.getPreprocessor(), &ci.getASTConsumer(), ci.getASTContext());

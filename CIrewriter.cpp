@@ -104,7 +104,7 @@ Expr *MyRecursiveASTVisitor::VisitBinaryOperator(BinaryOperator *E)
     // Insert function call at start of first expression.
     // Note getLocStart() should work as well as getExprLoc()
     Rewrite.InsertText(E->getLHS()->getExprLoc(),
-             E->getOpcode() == BO_LAnd ? "L_AND(" : "L_OR(", true);
+                       E->getOpcode() == BO_LAnd ? "L_AND(" : "L_OR(", true);
 
     // Replace operator ("||" or "&&") with ","
     Rewrite.ReplaceText(E->getOperatorLoc(), E->getOpcodeStr().size(), ",");
@@ -113,17 +113,17 @@ Expr *MyRecursiveASTVisitor::VisitBinaryOperator(BinaryOperator *E)
     Rewrite.InsertTextAfterToken(E->getRHS()->getLocEnd(), ")");
   }
   else
-  // Note isComparisonOp() is like isRelationalOp() but includes == and !=
-  if (E->isRelationalOp())
-  {
-    llvm::errs() << "Relational Op " << E->getOpcodeStr() << "\n";
-  }
-  else
-  // Handles == and != comparisons
-  if (E->isEqualityOp())
-  {
-    llvm::errs() << "Equality Op " << E->getOpcodeStr() << "\n";
-  }
+    // Note isComparisonOp() is like isRelationalOp() but includes == and !=
+    if (E->isRelationalOp())
+    {
+      llvm::errs() << "Relational Op " << E->getOpcodeStr() << "\n";
+    }
+    else
+      // Handles == and != comparisons
+      if (E->isEqualityOp())
+      {
+        llvm::errs() << "Equality Op " << E->getOpcodeStr() << "\n";
+      }
 
   return E;
 }
@@ -185,19 +185,19 @@ bool MyRecursiveASTVisitor::VisitStmt(Stmt *s)
     }
   }
   else
-  if (isa<WhileStmt>(s))
-  {
-    WhileStmt *While = cast<WhileStmt>(s);
-    Stmt *BODY = While->getBody();
-    InstrumentStmt(BODY);
-  }
-  else
-  if (isa<ForStmt>(s))
-  {
-    ForStmt *For = cast<ForStmt>(s);
-    Stmt *BODY = For->getBody();
-    InstrumentStmt(BODY);
-  }
+    if (isa<WhileStmt>(s))
+    {
+      WhileStmt *While = cast<WhileStmt>(s);
+      Stmt *BODY = While->getBody();
+      InstrumentStmt(BODY);
+    }
+    else
+      if (isa<ForStmt>(s))
+      {
+        ForStmt *For = cast<ForStmt>(s);
+        Stmt *BODY = For->getBody();
+        InstrumentStmt(BODY);
+      }
 
   return true; // returning false aborts the traversal
 }
@@ -216,15 +216,15 @@ bool MyRecursiveASTVisitor::VisitFunctionDecl(FunctionDecl *f)
 
     std::string ret;
     if (typ->isVoidType())
-       ret = "void";
+      ret = "void";
     else
-    if (typ->isIntegerType())
-       ret = "integer";
-    else
-    if (typ->isCharType())
-       ret = "char";
-    else
-       ret = "Other";
+      if (typ->isIntegerType())
+        ret = "integer";
+      else
+        if (typ->isCharType())
+          ret = "char";
+        else
+          ret = "Other";
 
     // Get name of function
     DeclarationNameInfo dni = f->getNameInfo();
@@ -280,8 +280,8 @@ int main(int argc, char **argv)
 
   if (argc < 2)
   {
-     llvm::errs() << "Usage: CIrewriter <options> <filename>\n";
-     return 1;
+    llvm::errs() << "Usage: CIrewriter <options> <filename>\n";
+    return 1;
   }
 
   // Get filename
@@ -302,13 +302,13 @@ int main(int argc, char **argv)
   // Create an invocation that passes any flags to preprocessor
   CompilerInvocation *Invocation = new CompilerInvocation;
   CompilerInvocation::CreateFromArgs(*Invocation, argv + 1, argv + argc,
-                                      compiler.getDiagnostics());
+                                     compiler.getDiagnostics());
   compiler.setInvocation(Invocation);
 
   // Set default target triple
-    std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
+  std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
   pto->Triple = llvm::sys::getDefaultTargetTriple();
-    TargetInfo *pti = TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), pto);
+  TargetInfo *pti = TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), pto);
   compiler.setTarget(pti);
 
   compiler.createFileManager();
@@ -330,33 +330,33 @@ int main(int argc, char **argv)
   // clang -v -c test.c
   // or clang++ for C++ paths as used below:
   headerSearchOptions.AddPath("/usr/include/c++/4.6",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/include/c++/4.6/i686-linux-gnu",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/include/c++/4.6/backward",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/local/include",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/local/lib/clang/3.3/include",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/include/i386-linux-gnu",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   headerSearchOptions.AddPath("/usr/include",
-          clang::frontend::Angled,
-          false,
-          false);
+                              clang::frontend::Angled,
+                              false,
+                              false);
   // </Warning!!> -- End of Platform Specific Code
 
 
@@ -384,9 +384,9 @@ int main(int argc, char **argv)
   Rewrite.setSourceMgr(compiler.getSourceManager(), compiler.getLangOpts());
 
   const FileEntry *pFile = compiler.getFileManager().getFile(fileName);
-    compiler.getSourceManager().setMainFileID( compiler.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
+  compiler.getSourceManager().setMainFileID( compiler.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
   compiler.getDiagnosticClient().BeginSourceFile(compiler.getLangOpts(),
-                                                &compiler.getPreprocessor());
+                                                 &compiler.getPreprocessor());
 
   MyASTConsumer astConsumer(Rewrite);
 
@@ -394,7 +394,7 @@ int main(int argc, char **argv)
   std::string outName (fileName);
   size_t ext = outName.rfind(".");
   if (ext == std::string::npos)
-     ext = outName.length();
+    ext = outName.length();
   outName.insert(ext, "_out");
 
   llvm::errs() << "Output to: " << outName << "\n";
@@ -414,7 +414,7 @@ int main(int argc, char **argv)
 
     // Now output rewritten source code
     const RewriteBuffer *RewriteBuf =
-      Rewrite.getRewriteBufferFor(compiler.getSourceManager().getMainFileID());
+        Rewrite.getRewriteBufferFor(compiler.getSourceManager().getMainFileID());
     outFile << std::string(RewriteBuf->begin(), RewriteBuf->end());
   }
   else

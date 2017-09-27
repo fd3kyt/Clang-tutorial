@@ -26,31 +26,31 @@ namespace tooling {
  *****************************************************************************/
 class MyASTConsumer : public clang::ASTConsumer
 {
-public:
-    MyASTConsumer() : clang::ASTConsumer() { }
-    virtual ~MyASTConsumer() { }
+ public:
+  MyASTConsumer() : clang::ASTConsumer() { }
+  virtual ~MyASTConsumer() { }
 
-    virtual bool HandleTopLevelDecl( clang::DeclGroupRef d)
+  virtual bool HandleTopLevelDecl( clang::DeclGroupRef d)
+  {
+    static int count = 0;
+    clang::DeclGroupRef::iterator it;
+    for( it = d.begin(); it != d.end(); it++)
     {
-        static int count = 0;
-        clang::DeclGroupRef::iterator it;
-        for( it = d.begin(); it != d.end(); it++)
-        {
-            count++;
-            clang::VarDecl *vd = llvm::dyn_cast<clang::VarDecl>(*it);
-            if(!vd)
-            {
-                continue;
-            }
-            if( vd->isFileVarDecl() && !vd->hasExternalStorage() )
-            {
-                std::cerr << "Read top-level variable decl: '";
-                std::cerr << vd->getDeclName().getAsString() ;
-                std::cerr << std::endl;
-            }
-        }
-        return true;
+      count++;
+      clang::VarDecl *vd = llvm::dyn_cast<clang::VarDecl>(*it);
+      if(!vd)
+      {
+        continue;
+      }
+      if( vd->isFileVarDecl() && !vd->hasExternalStorage() )
+      {
+        std::cerr << "Read top-level variable decl: '";
+        std::cerr << vd->getDeclName().getAsString() ;
+        std::cerr << std::endl;
+      }
     }
+    return true;
+  }
 };
 
 /******************************************************************************
@@ -58,10 +58,10 @@ public:
  *****************************************************************************/
 class MyFactory
 {
-  public:
-    std::unique_ptr<MyASTConsumer> newASTConsumer() {
-      return llvm::make_unique<MyASTConsumer>();
-      }
+ public:
+  std::unique_ptr<MyASTConsumer> newASTConsumer() {
+    return llvm::make_unique<MyASTConsumer>();
+  }
 
 };
 

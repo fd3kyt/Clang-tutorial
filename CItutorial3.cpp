@@ -27,77 +27,77 @@
  *****************************************************************************/
 int main()
 {
-    using clang::CompilerInstance;
-    using clang::TargetOptions;
-    using clang::TargetInfo;
-    using clang::FileEntry;
-    using clang::Token;
-    using clang::HeaderSearch;
-    using clang::HeaderSearchOptions;
-    using clang::DiagnosticOptions;
-    using clang::TextDiagnosticPrinter;
+  using clang::CompilerInstance;
+  using clang::TargetOptions;
+  using clang::TargetInfo;
+  using clang::FileEntry;
+  using clang::Token;
+  using clang::HeaderSearch;
+  using clang::HeaderSearchOptions;
+  using clang::DiagnosticOptions;
+  using clang::TextDiagnosticPrinter;
 
-    CompilerInstance ci;
-    DiagnosticOptions diagnosticOptions;
-    ci.createDiagnostics();
+  CompilerInstance ci;
+  DiagnosticOptions diagnosticOptions;
+  ci.createDiagnostics();
 
-    std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
-    pto->Triple = llvm::sys::getDefaultTargetTriple();
-    TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
-    ci.setTarget(pti);
+  std::shared_ptr<clang::TargetOptions> pto = std::make_shared<clang::TargetOptions>();
+  pto->Triple = llvm::sys::getDefaultTargetTriple();
+  TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
+  ci.setTarget(pti);
 
-    ci.createFileManager();
-    ci.createSourceManager(ci.getFileManager());
-    ci.createPreprocessor(clang::TU_Complete);
-    ci.getPreprocessorOpts().UsePredefines = true;
+  ci.createFileManager();
+  ci.createSourceManager(ci.getFileManager());
+  ci.createPreprocessor(clang::TU_Complete);
+  ci.getPreprocessorOpts().UsePredefines = true;
 
-    std::shared_ptr<clang::HeaderSearchOptions> hso( new clang::HeaderSearchOptions());
-    HeaderSearch headerSearch(hso,
-                              ci.getSourceManager(),
-                              ci.getDiagnostics(),
-                              ci.getLangOpts(),
-                              pti);
+  std::shared_ptr<clang::HeaderSearchOptions> hso( new clang::HeaderSearchOptions());
+  HeaderSearch headerSearch(hso,
+                            ci.getSourceManager(),
+                            ci.getDiagnostics(),
+                            ci.getLangOpts(),
+                            pti);
 
-    // <Warning!!> -- Platform Specific Code lives here
-    // This depends on A) that you're running linux and
-    // B) that you have the same GCC LIBs installed that
-    // I do. 
-    // Search through Clang itself for something like this,
-    // go on, you won't find it. The reason why is Clang
-    // has its own versions of std* which are installed under 
-    // /usr/local/lib/clang/<version>/include/
-    // See somewhere around Driver.cpp:77 to see Clang adding
-    // its version of the headers to its include path.
-    hso->AddPath("/usr/include", 
-                                clang::frontend::Angled, 
-                                false, 
-                                false);
-    hso->AddPath("/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include",
-                                clang::frontend::Angled,
-                                false, 
-                                false);
-    // </Warning!!> -- End of Platform Specific Code
+  // <Warning!!> -- Platform Specific Code lives here
+  // This depends on A) that you're running linux and
+  // B) that you have the same GCC LIBs installed that
+  // I do. 
+  // Search through Clang itself for something like this,
+  // go on, you won't find it. The reason why is Clang
+  // has its own versions of std* which are installed under 
+  // /usr/local/lib/clang/<version>/include/
+  // See somewhere around Driver.cpp:77 to see Clang adding
+  // its version of the headers to its include path.
+  hso->AddPath("/usr/include", 
+               clang::frontend::Angled, 
+               false, 
+               false);
+  hso->AddPath("/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include",
+               clang::frontend::Angled,
+               false, 
+               false);
+  // </Warning!!> -- End of Platform Specific Code
 
-    clang::RawPCHContainerReader container_reader;
-    clang::InitializePreprocessor(ci.getPreprocessor(), 
-                                  ci.getPreprocessorOpts(),
-                                  container_reader,
-                                  ci.getFrontendOpts());
+  clang::RawPCHContainerReader container_reader;
+  clang::InitializePreprocessor(ci.getPreprocessor(), 
+                                ci.getPreprocessorOpts(),
+                                container_reader,
+                                ci.getFrontendOpts());
 
-    const FileEntry *pFile = ci.getFileManager().getFile("testInclude.c");
-    ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
-    ci.getPreprocessor().EnterMainSourceFile();
-    ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
-                                             &ci.getPreprocessor());
-    Token tok;
-    do {
-        ci.getPreprocessor().Lex(tok);
-        if( ci.getDiagnostics().hasErrorOccurred())
-            break;
-        ci.getPreprocessor().DumpToken(tok);
-        std::cerr << std::endl;
-    } while ( tok.isNot(clang::tok::eof));
-    ci.getDiagnosticClient().EndSourceFile();
+  const FileEntry *pFile = ci.getFileManager().getFile("testInclude.c");
+  ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
+  ci.getPreprocessor().EnterMainSourceFile();
+  ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
+                                           &ci.getPreprocessor());
+  Token tok;
+  do {
+    ci.getPreprocessor().Lex(tok);
+    if( ci.getDiagnostics().hasErrorOccurred())
+      break;
+    ci.getPreprocessor().DumpToken(tok);
+    std::cerr << std::endl;
+  } while ( tok.isNot(clang::tok::eof));
+  ci.getDiagnosticClient().EndSourceFile();
 
-    return 0;
+  return 0;
 }

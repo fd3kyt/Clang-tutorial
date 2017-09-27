@@ -25,31 +25,31 @@ namespace tooling {
 
 class MyCommentHandler : public clang::CommentHandler
 {
-  private:
-    llvm::StringRef m_inFile;
+ private:
+  llvm::StringRef m_inFile;
 
-  public:
+ public:
 
-    void set_InFile(llvm::StringRef inFile) 
+  void set_InFile(llvm::StringRef inFile) 
+  {
+    m_inFile = inFile;
+  }
+
+  virtual bool HandleComment( clang::Preprocessor &pp, clang::SourceRange rng)
+  {
+    clang::SourceManager &sm = pp.getSourceManager();
+    if( sm.getFilename(rng.getBegin()) == m_inFile)
     {
-      m_inFile = inFile;
+      std::pair<FileID, unsigned int> startLoc = sm.getDecomposedLoc(rng.getBegin());
+      std::pair<FileID, unsigned int> endLoc = sm.getDecomposedLoc(rng.getEnd());
+
+      llvm::StringRef fileData = sm.getBufferData(startLoc.first);
+
+      std::cout << fileData.substr(startLoc.second, endLoc.second - startLoc.second).str();
+      std::cout << std::endl;
     }
-
-    virtual bool HandleComment( clang::Preprocessor &pp, clang::SourceRange rng)
-    {
-      clang::SourceManager &sm = pp.getSourceManager();
-      if( sm.getFilename(rng.getBegin()) == m_inFile)
-      {
-        std::pair<FileID, unsigned int> startLoc = sm.getDecomposedLoc(rng.getBegin());
-        std::pair<FileID, unsigned int> endLoc = sm.getDecomposedLoc(rng.getEnd());
-
-        llvm::StringRef fileData = sm.getBufferData(startLoc.first);
-
-        std::cout << fileData.substr(startLoc.second, endLoc.second - startLoc.second).str();
-        std::cout << std::endl;
-      }
-      return false;
-    }
+    return false;
+  }
 };
 
 /******************************************************************************
@@ -57,31 +57,31 @@ class MyCommentHandler : public clang::CommentHandler
  *****************************************************************************/
 class MyASTConsumer : public clang::ASTConsumer
 {
-public:
-    MyASTConsumer() : clang::ASTConsumer() { }
-    virtual ~MyASTConsumer() { }
+ public:
+  MyASTConsumer() : clang::ASTConsumer() { }
+  virtual ~MyASTConsumer() { }
 
-    virtual bool HandleTopLevelDecl( clang::DeclGroupRef d)
+  virtual bool HandleTopLevelDecl( clang::DeclGroupRef d)
+  {
+    static int count = 0;
+    clang::DeclGroupRef::iterator it;
+    for( it = d.begin(); it != d.end(); it++)
     {
-        static int count = 0;
-        clang::DeclGroupRef::iterator it;
-        for( it = d.begin(); it != d.end(); it++)
-        {
-            count++;
-            clang::VarDecl *vd = llvm::dyn_cast<clang::VarDecl>(*it);
-            if(!vd)
-            {
-                continue;
-            }
-            if( vd->isFileVarDecl() && !vd->hasExternalStorage() )
-            {
-                std::cerr << "Read top-level variable decl: '";
-                std::cerr << vd->getDeclName().getAsString() ;
-                std::cerr << std::endl;
-            }
-        }
-        return true;
+      count++;
+      clang::VarDecl *vd = llvm::dyn_cast<clang::VarDecl>(*it);
+      if(!vd)
+      {
+        continue;
+      }
+      if( vd->isFileVarDecl() && !vd->hasExternalStorage() )
+      {
+        std::cerr << "Read top-level variable decl: '";
+        std::cerr << vd->getDeclName().getAsString() ;
+        std::cerr << std::endl;
+      }
     }
+    return true;
+  }
 };
 
 /******************************************************************************
@@ -89,15 +89,15 @@ public:
  *****************************************************************************/
 class MyFactory : public clang::ASTFrontendAction
 {
-  private:
-    MyCommentHandler ch;
+ private:
+  MyCommentHandler ch;
 
-  public:
-    std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance &ci, llvm::StringRef inFile) {
-      ch.set_InFile(inFile);
-      ci.getPreprocessor().addCommentHandler(&ch);
-      return llvm::make_unique<MyASTConsumer>();
-    }
+ public:
+  std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance &ci, llvm::StringRef inFile) {
+    ch.set_InFile(inFile);
+    ci.getPreprocessor().addCommentHandler(&ch);
+    return llvm::make_unique<MyASTConsumer>();
+  }
 
 };
 
