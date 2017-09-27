@@ -51,7 +51,7 @@ int main()
     ci.createPreprocessor(clang::TU_Complete);
     ci.getPreprocessorOpts().UsePredefines = true;
 
-    llvm::IntrusiveRefCntPtr<clang::HeaderSearchOptions> hso( new clang::HeaderSearchOptions());
+    std::shared_ptr<clang::HeaderSearchOptions> hso( new clang::HeaderSearchOptions());
     HeaderSearch headerSearch(hso,
                               ci.getSourceManager(),
                               ci.getDiagnostics(),

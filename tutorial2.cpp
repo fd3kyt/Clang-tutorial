@@ -54,7 +54,7 @@ int main()
             *pDiagnosticsEngine,
             targetOptions);
 
-    llvm::IntrusiveRefCntPtr<clang::HeaderSearchOptions> hso;
+    std::shared_ptr<clang::HeaderSearchOptions> hso;
     clang::HeaderSearch headerSearch(hso,
                                      sourceManager, 
                                      *pDiagnosticsEngine,
@@ -62,7 +62,7 @@ int main()
                                      pTargetInfo);
     clang::CompilerInstance compInst;
 
-    llvm::IntrusiveRefCntPtr<clang::PreprocessorOptions> pOpts;
+    std::shared_ptr<clang::PreprocessorOptions> pOpts;
 
     clang::Preprocessor preprocessor(
         pOpts,

@@ -92,7 +92,7 @@ int main()
         *pDiagnosticsEngine,
         fileManager);
 
-    llvm::IntrusiveRefCntPtr<clang::HeaderSearchOptions> headerSearchOptions(new clang::HeaderSearchOptions());
+    std::shared_ptr<clang::HeaderSearchOptions> headerSearchOptions(new clang::HeaderSearchOptions());
     // <Warning!!> -- Platform Specific Code lives here
     // This depends on A) that you're running linux and
     // B) that you have the same GCC LIBs installed that
@@ -132,7 +132,7 @@ int main()
                                      pTargetInfo);
     clang::CompilerInstance compInst;
 
-    llvm::IntrusiveRefCntPtr<clang::PreprocessorOptions> pOpts( new clang::PreprocessorOptions());
+    std::shared_ptr<clang::PreprocessorOptions> pOpts( new clang::PreprocessorOptions());
     clang::Preprocessor preprocessor(
         pOpts,
         *pDiagnosticsEngine,
