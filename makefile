@@ -46,6 +46,8 @@ CLANGLIBS = \
 				$(shell $(LLVMCONFIG) --libs)\
 				$(shell $(LLVMCONFIG) --system-libs)\
                 -lcurses
+# "llvm-config --libs" will get a lot.
+# "llvm-config --libs native/engine" will fail
 
 all: $(OBJECTS) $(EXES)
 
