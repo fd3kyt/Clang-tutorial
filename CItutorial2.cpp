@@ -1,7 +1,7 @@
 /***   CItutorial2.cpp   *****************************************************
  * This code is licensed under the New BSD license.
  * See LICENSE.txt for details.
- * 
+ *
  * The CI tutorials remake the original tutorials but using the
  * CompilerInstance object which has as one of its purpose to create commonly
  * used Clang types.
@@ -46,6 +46,7 @@ int main()
   ci.createFileManager();
   ci.createSourceManager(ci.getFileManager());
   ci.createPreprocessor(clang::TU_Complete);
+  // before: tutorial1
 
   const FileEntry *pFile = ci.getFileManager().getFile("test.c");
   ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));

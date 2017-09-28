@@ -1,7 +1,7 @@
 /***   CItutorial1.cpp   *****************************************************
  * This code is licensed under the New BSD license.
  * See LICENSE.txt for details.
- * 
+ *
  * The _CI tutorials remake the original tutorials but using the
  * CompilerInstance object which has as one of its purpose to create commonly
  * used Clang types.
@@ -27,14 +27,17 @@ int main()
   using clang::DiagnosticOptions;
   using clang::TextDiagnosticPrinter;
 
+  // CompilerInstance
   CompilerInstance ci;
   ci.createDiagnostics();
 
+  // target
   std::shared_ptr<TargetOptions>	pto	=	std::make_shared<TargetOptions>();
   pto->Triple = llvm::sys::getDefaultTargetTriple();
   TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(), pto);
   ci.setTarget(pti);
 
+  // some more
   ci.createFileManager();
   ci.createSourceManager(ci.getFileManager());
   ci.createPreprocessor(clang::TU_Complete);

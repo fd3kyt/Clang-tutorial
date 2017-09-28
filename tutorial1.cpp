@@ -35,7 +35,7 @@ int main()
           true);
   llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs> pDiagIDs;
   //clang::DiagnosticIDs diagIDs;
-    
+
   clang::DiagnosticsEngine *pDiagnosticsEngine =
       new clang::DiagnosticsEngine(pDiagIDs,
                                    &diagnosticOptions,
