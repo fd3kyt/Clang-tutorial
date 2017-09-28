@@ -4,3 +4,4 @@
 *sdf
 *.aps
 *.o
+/compile_commands.json
