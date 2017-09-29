@@ -6,6 +6,9 @@
  * CompilerInstance object which has as one of its purpose to create commonly
  * used Clang types.
  *****************************************************************************/
+
+/** Preprocessor, dump tokens.
+ */
 #include <iostream>
 
 #include "llvm/Support/Host.h"
@@ -24,8 +27,13 @@
 /******************************************************************************
  *
  *****************************************************************************/
-int main()
+int main(int argc, char **argv)
 {
+  std::string input_file="test.c";
+  if(argc >= 2){
+    input_file=argv[1];
+  }
+
   using clang::CompilerInstance;
   using clang::TargetOptions;
   using clang::TargetInfo;
@@ -48,7 +56,7 @@ int main()
   ci.createPreprocessor(clang::TU_Complete);
   // before: tutorial1
 
-  const FileEntry *pFile = ci.getFileManager().getFile("test.c");
+  const FileEntry *pFile = ci.getFileManager().getFile(input_file);
   ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
   ci.getPreprocessor().EnterMainSourceFile();
   ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
