@@ -1,7 +1,7 @@
 /***   CItutorial3.cpp   *****************************************************
  * This code is licensed under the New BSD license.
  * See LICENSE.txt for details.
- * 
+ *
  * The CI tutorials remake the original tutorials but using the
  * CompilerInstance object which has as one of its purpose to create commonly
  * used Clang types.
@@ -25,9 +25,12 @@
 
 #include "clang/Lex/PreprocessorOptions.h"
 
-/******************************************************************************
- *
- *****************************************************************************/
+void addSystemSearchPath(clang::CompilerInstance& ci, std::string path){
+  const clang::DirectoryEntry * directory = ci.getFileManager().getDirectory(path);
+  const clang::DirectoryLookup directory_lookup(directory, clang::SrcMgr::C_System, false);
+  ci.getPreprocessor().getHeaderSearchInfo().AddSearchPath(directory_lookup, true);
+}
+
 int main()
 {
   using clang::CompilerInstance;
@@ -54,35 +57,16 @@ int main()
   ci.createPreprocessor(clang::TU_Complete);
   ci.getPreprocessorOpts().UsePredefines = true;
 
-  std::shared_ptr<clang::HeaderSearchOptions> hso( new clang::HeaderSearchOptions());
-  HeaderSearch headerSearch(hso,
-                            ci.getSourceManager(),
-                            ci.getDiagnostics(),
-                            ci.getLangOpts(),
-                            pti);
-
-  // <Warning!!> -- Platform Specific Code lives here
-  // This depends on A) that you're running linux and
-  // B) that you have the same GCC LIBs installed that
-  // I do. 
-  // Search through Clang itself for something like this,
-  // go on, you won't find it. The reason why is Clang
-  // has its own versions of std* which are installed under 
-  // /usr/local/lib/clang/<version>/include/
-  // See somewhere around Driver.cpp:77 to see Clang adding
-  // its version of the headers to its include path.
-  hso->AddPath("/usr/include", 
-               clang::frontend::Angled, 
-               false, 
-               false);
-  hso->AddPath("/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include",
-               clang::frontend::Angled,
-               false, 
-               false);
-  // </Warning!!> -- End of Platform Specific Code
+  addSystemSearchPath(ci, "/usr/include");
+  addSystemSearchPath(ci, "/usr/include/x86_64-linux-gnu/");
+  addSystemSearchPath(ci, "/usr/include/x86_64-linux-gnu/c++/4.9/");
+  addSystemSearchPath(ci, "/usr/include/linux/");
+  addSystemSearchPath(ci, "/usr/include/c++/4.9/");
+  addSystemSearchPath(ci, "/usr/include/c++/4.9/tr1/");
+  addSystemSearchPath(ci, "/usr/include/c++/4.9/tr2/");
 
   clang::RawPCHContainerReader container_reader;
-  clang::InitializePreprocessor(ci.getPreprocessor(), 
+  clang::InitializePreprocessor(ci.getPreprocessor(),
                                 ci.getPreprocessorOpts(),
                                 container_reader,
                                 ci.getFrontendOpts());
