@@ -62,12 +62,11 @@ int main()
   const FileEntry *pFile = ci.getFileManager().getFile("test.c");
   ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
 
-  // #################### ParseAST ####################
+  // #################### Parsing ####################
+  ci.createASTContext();
   ci.setASTConsumer(llvm::make_unique<ASTConsumer>());
 
-  ci.createASTContext();
   ci.createSema(clang::TU_Complete, NULL);
-
   clang::ParseAST(ci.getSema());
   ci.getASTContext().Idents.PrintStats();
 
