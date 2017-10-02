@@ -1,7 +1,7 @@
 /***   CItutorial4.cpp   *****************************************************
  * This code is licensed under the New BSD license.
  * See LICENSE.txt for details.
- * 
+ *
  * The CI tutorials remake the original tutorials but using the
  * CompilerInstance object which has as one of its purpose to create commonly
  * used Clang types.
@@ -44,6 +44,7 @@ int main()
   using clang::DiagnosticOptions;
   using clang::TextDiagnosticPrinter;
 
+  // #################### save as before (no HeaderSearch) ####################
   CompilerInstance ci;
   DiagnosticOptions diagnosticOptions;
   ci.createDiagnostics();
@@ -58,13 +59,15 @@ int main()
   ci.createPreprocessor(clang::TU_Complete);
   ci.getPreprocessorOpts().UsePredefines = false;
 
+  const FileEntry *pFile = ci.getFileManager().getFile("test.c");
+  ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
+
+  // #################### ParseAST ####################
   ci.setASTConsumer(llvm::make_unique<ASTConsumer>());
 
   ci.createASTContext();
   ci.createSema(clang::TU_Complete, NULL);
 
-  const FileEntry *pFile = ci.getFileManager().getFile("test.c");
-  ci.getSourceManager().setMainFileID( ci.getSourceManager().createFileID( pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
   clang::ParseAST(ci.getSema());
   ci.getASTContext().Idents.PrintStats();
 
