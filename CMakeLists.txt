@@ -22,20 +22,27 @@ include_directories(/usr/local/include/llvm/)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RTTIFLAG}")
 
-macro(read_llvm_config_libs option prefix output-var)
-  set(${output-var})
-  execute_process(COMMAND ${LLVMCONFIG} ${option} OUTPUT_VARIABLE libs_string)
-  separate_arguments(libs_string)
-  foreach(lib ${libs_string})
-    string(REGEX REPLACE "^${prefix}" "" lib ${lib})
-    list(APPEND ${output-var} ${lib})
+function(link_options_to_list link_option_string prefix output-var)
+  set(result)
+  separate_arguments(link_options UNIX_COMMAND ${link_option_string})
+  foreach(lib ${link_options})
+    if(lib MATCHES "^${prefix}")
+      string(REGEX REPLACE "^${prefix}" "" lib ${lib})
+      list(APPEND result ${lib})
+    else()
+      message("Option with unexpected prefix, ignoring: ${lib}")
+    endif()
   endforeach()
-endmacro()
+  set(${output-var} ${result} PARENT_SCOPE)
+endfunction()
 
-read_llvm_config_libs("--libs" "-l" haha)
-list(LENGTH haha len)
-message(${len})
-message("${haha}")              #different with message(${haha})
+function(read_llvm_config_libs option output-var)
+
+endfunction()
+
+link_options_to_list("-la -lb -Lk -lc" "-l" output)
+message("${output}")
+
 return()
 
 SET(SOURCES "tutorial1.cpp
