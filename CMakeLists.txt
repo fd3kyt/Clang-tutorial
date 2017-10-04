@@ -92,7 +92,7 @@ SET(SOURCES tutorial1.cpp
   CommentHandling.cpp)
 
 foreach(source ${SOURCES})
-  string(REGEX REPLACE ".cpp$" "" executable ${source} )
+  get_filename_component(executable ${source} NAME_WE)
   add_executable(${executable} ${source})
   target_link_libraries(${executable} llvm_library_collection)
 endforeach()
