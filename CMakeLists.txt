@@ -12,13 +12,57 @@ macro(read_llvm_config option)
   execute_process(COMMAND ${LLVMCONFIG} ${option} OUTPUT_VARIABLE ${output-var})
 endmacro()
 read_llvm_config("--src-root")
-message(${LLVM-SRC-ROOT})
+read_llvm_config("--obj-root")
+read_llvm_config("--cxxflags")
+read_llvm_config("--ldflags")
+
+include_directories(${LLVM-SRC-ROOT}/tools/clang/include)
+include_directories(${LLVM-OBJ-ROOT}/tools/clang/include)
+include_directories(/usr/local/include/llvm/)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RTTIFLAG}")
+
+macro(read_llvm_config_libs option prefix output-var)
+  set(${output-var})
+  execute_process(COMMAND ${LLVMCONFIG} ${option} OUTPUT_VARIABLE libs_string)
+  separate_arguments(libs_string)
+  foreach(lib ${libs_string})
+    string(REGEX REPLACE "^${prefix}" "" lib ${lib})
+    list(APPEND ${output-var} ${lib})
+  endforeach()
+endmacro()
+
+read_llvm_config_libs("--libs" "-l" haha)
+list(LENGTH haha len)
+message(${len})
+message("${haha}")              #different with message(${haha})
+return()
+
+SET(SOURCES "tutorial1.cpp
+tutorial2.cpp
+tutorial3.cpp
+tutorial4.cpp
+tutorial6.cpp
+CItutorial1.cpp
+CItutorial2.cpp
+CItutorial3.cpp
+CItutorial4.cpp
+CItutorial6.cpp
+CIBasicRecursiveASTVisitor.cpp
+CIrewriter.cpp
+ToolingTutorial.cpp
+CommentHandling.cpp")
+
+foreach(source ${SOURCES})
+  string(REGEX REPLACE ".cpp$" "" executable ${source} )
+  add_executable(${executable} ${source})
+endforeach()
 
 
 return()
 
 
-# CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG) -I /usr/local/include/llvm/ --std=c++11
+
 # LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags)
 
 # SOURCES = tutorial1.cpp \
