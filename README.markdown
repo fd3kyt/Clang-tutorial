@@ -1,3 +1,47 @@
+# About this clone #
+This is a clone of https://github.com/loarabia/Clang-tutorial
+
+## What is differnet?
+* Built against LLVM 5.0.0
+* Use CMake to build
+  * Making use of the cmake packages that come with LLVM, the
+    CMakeLists.txt here is very compact.
+
+## How to build this?
+First, install LLVM and Clang (For me, I installed with the pre-built binaries: [Clang for x86_64 Ubuntu 14.04](http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04.tar.xz))
+
+Then, build this:
+``` shell
+git clone https://github.com/fd3kyt/Clang-tutorial.git
+cd Clang-tutorial
+mkdir -p build/
+cd build
+CXX=clang++ cmake -make .. && make
+```
+
+If the compilation succeeds, run one of the program to confirm:
+
+``` shell
+./build/CItutorial6
+```
+
+You should see something likes this:
+``` shell
+input04.c:1:10: fatal error: 'stdio.h' file not found
+#include <stdio.h>
+         ^~~~~~~~~
+Read top-level variable decl: 'a
+Read top-level variable decl: 'a
+Read top-level variable decl: 'b
+Read top-level variable decl: 'c
+Read top-level variable decl: 'funcp
+Read top-level variable decl: 'fp2
+Read top-level variable decl: 'fp3
+Read top-level variable decl: 't
+```
+
+
+# Below is the origin readme #
 # About #
 This is a collection of tutorials showing off how to use core Clang types. It is based directly on two older tutorials which no longer built due to code rot.
 
