@@ -5,3 +5,4 @@
 *.aps
 *.o
 /compile_commands.json
+/build/
