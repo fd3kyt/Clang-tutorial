@@ -2,21 +2,20 @@ cmake_minimum_required(VERSION 3.2)
 
 PROJECT(clang-tutorial CXX)
 
-#CLANGConfig.cmake and fail.
-#careful, case-sensitive. If you use "CLANG", cmake will try to find
+# Will find /usr/local/lib/cmake/clang/ClangConfig.cmake
+#
+# CAUTION: case-sensitive. If you use "CLANG", cmake will try to find
+# CLANGConfig.cmake and fail.
 find_package(Clang REQUIRED CONFIG)
 
-# Set your project compile flags.
-# E.g. if using the C++ header files
-# you will need to enable C++11 support
-# for your compiler.
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti")
 
-# Now build our tools
 add_executable(tutorial6 tutorial6.cpp)
 
-# Link against LLVM libraries
+# Link against clang libraries
 target_link_libraries(tutorial6 findAllSymbols)
+# findAllSymbols is defined in ClangTargets.cmake and depend on llvm
+# libraries.
 
 return()
 
